@@ -1,34 +1,67 @@
-// components/AddToCartForm.js
-import { useState } from 'react';
+import { useFormik } from 'formik';
 
 export default function AddToCartForm({ book, onClose }) {
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Added to cart:', { book, fromDate, toDate });
-    onClose(); // Close the form after adding to cart
-  };
+  const formik = useFormik({
+    initialValues: {
+      title: book.title,
+      fromDate: '',
+      toDate: '',
+    },
+    onSubmit: (values) => {
+      console.log('Adding to cart:', values);
+      onClose(); 
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 p-4 border rounded">
-      <h3 className="text-lg font-semibold mb-2">title : {book.title}</h3>
-      <input
-        type="date"
-        value={fromDate}
-        onChange={(e) => setFromDate(e.target.value)}
-        placeholder="FROM (MM/DD/YYYY)"
-        className="block mb-2 p-2 border rounded"
-      />
-      <input
-        type="date"
-        value={toDate}
-        onChange={(e) => setToDate(e.target.value)}
-        placeholder="TO (MM/DD/YYYY)"
-        className="block mb-4 p-2 border rounded"
-      />
-      <button type="submit" className="bg-purple-500 text-white p-2 rounded">Add</button>
-    </form>
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+        <h2 className="text-xl mb-4">Add "{book.title}" to Cart</h2>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700">Title</label>
+            <input
+              type="text"
+              name="title"
+              value={formik.values.title}
+              readOnly
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">From Date</label>
+            <input
+              type="date"
+              name="fromDate"
+              onChange={formik.handleChange}
+              value={formik.values.fromDate}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">To Date</label>
+            <input
+              type="date"
+              name="toDate"
+              onChange={formik.handleChange}
+              value={formik.values.toDate}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="flex justify-end">
+            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mr-2">
+              Add to Cart
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-gray-500 text-white px-4 py-2 rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
